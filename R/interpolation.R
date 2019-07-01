@@ -1,5 +1,6 @@
 #'Interpolating points to data of list
 #'@param collect data to be interpolated
+#'@importFrom myfs debugText
 #'@ export
 #'
 all_interpolate<-function(collect){
@@ -8,7 +9,7 @@ all_interpolate<-function(collect){
     inter.oricord<-voronoi_interpo(collect[[l]][[2]], 15)
     incollect[[l]][[2]]<-rbind(incollect[[l]][[2]], inter.oricord)
     incollect[[l]][[1]]<-nrow(incollect[[l]][[2]])
-    debugText(l, incollect[[l]][[1]])
+    myfs::debugText(l, incollect[[l]][[1]])
   }
 
   return(incollect)
@@ -29,14 +30,12 @@ voronoiInterpo<-function(figure, nvics){
 
     if(element[i]==0){
 
-      vics<-get.vicinity(dist, i, nvics)
+      vics<-get_vicinity(dist, i, nvics)
 
-      vics.line<-line.vics(i, vics)
-
-      element[vics.line]<-element[vics.line]+1
+      element[vics]<-element[vics]+1
 
       #vics.oricord<-voronoiProcess(vics.line, figure)
-      vics.oricord<-voronoiBorder(vics.line, figure)[[1]]
+      vics.oricord<-voronoiBorder(vics, figure)[[1]]
 
       if(i==1){oricord<-vics.oricord}
       else{oricord<-rbind(oricord, vics.oricord)}
@@ -66,5 +65,62 @@ get_vicinity<-function(dist, center, nvic){
        .[1:(nvic+1)]
 
   return(vic)
+
+}
+
+#'Add points at the vertexes of Voronoi region
+#'@param vics center and neighbor points
+#'@param figure data set to be interpolated
+#'@importFrom deldir deldir
+#'@return added points
+#'
+voronoi_border<-function(vics, figure){
+
+
+  vics_pca<-prcomp(figure[vics,])
+
+  res<-deldir::deldir(vics_pca$x[,1], vics_pca$x[,2])
+
+  tiles<-tile.list(res)
+
+  insecs<-cbind(tiles[[1]][["x"]], tiles[[1]][["y"]])
+
+  exist<-exist_convexhull_check(vics_pca, insecs)
+
+
+  vics.oricord<-originCoodinate(vics.pca, insecs[which(exist==T), ])
+
+  return(list(oricord=vics.oricord, pca.inter=insecs[which(exist==T), ]))
+
+}
+
+
+
+#'Distinguishing whether passed points are in convex.
+#'@param rpca points consisting a convex
+#'@param insecs points to be distinguished
+#'@importFrom grDevices chull
+#'
+#'
+#'
+exist_convexhull_check<-function(rpca, insecs){
+
+  chul<-grDevices::chull(rpca[["x"]][,1:2])
+
+  exist<-sapply(1:nrow(insecs), function(i){
+    sides<-chul[which(rpca[["x"]][chul,1]>=insecs[i,1])] %>%
+      sapply(., function(k)convex_hull_vertx(chul, k))
+    if(length(sides)==0){return(F)}
+    else{cross.side<-sidesSet(sides)}
+    hline<-matrix(c(insecs[i,], max(rpca[["x"]][chul,1][which(rpca[["x"]][chul,1]>=insecs[i,1])]), insecs[i,2]), 2, 2, byrow=T)
+    #debugText(hline)
+    c.ncross<-convex_hull_check(rpca, hline, t(cross.side))
+    #debugText(c.ncross)
+    if(length(which(c.ncross==T)) %% 2 != 0){return(T)}
+    else{return(F)}
+
+  })
+
+  return(exist)
 
 }
