@@ -1,9 +1,9 @@
 Package: interpo3d
 Type: Package
-Title: What the Package Does (Title Case)
+Title: The R Package to add points to small amout of data
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Noritaka Yamada 
+Maintainer: Noritaka Yamada <okayasu@fz.iit.tsukuba.ac.jp>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE

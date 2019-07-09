@@ -231,3 +231,24 @@ origin_coordinate<-function(rpca, incord, ori_cen){
   return(t(oricord))
 
 }
+
+#' Deriving sides having a specified vertex of a convex
+#' @param chul vertex set of a convex
+#' @param vertx a vertex to derive what sides have this vertex
+#' @importFrom magrittr %>%
+#' @return side set having "vertx"
+#'
+convex_hull_vertx<-function(chul, vertx){
+
+
+  vert_set<-c(chul[length(chul)], chul, chul[1])
+
+  #debugText(vert.set, which(chul==vertx))
+
+  sides<-matrix(0, 2, 2)
+  sides[1,]<-which(chul==vertx) %>% '+'(., c(0, 1)) %>%   vert_set[.]
+  sides[2,]<-which(chul==vertx) %>% '+'(., c(1, 2)) %>%   vert_set[.]
+
+  return(sides)
+
+}
