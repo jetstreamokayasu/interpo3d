@@ -11,6 +11,9 @@ voronoi_interpo(figure, nvics)
 
 \item{nvics}{the number of neighborhood points}
 }
+\value{
+origin points and intepolated points
+}
 \description{
 Interpolating points to one data set
 }

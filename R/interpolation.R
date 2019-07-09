@@ -1,7 +1,7 @@
 #'Interpolating points to data of list
 #'@param collect data to be interpolated
 #'@importFrom myfs debugText
-#'@ export
+#'@export
 #'
 all_interpolate<-function(collect){
   incollect<-collect
@@ -9,7 +9,7 @@ all_interpolate<-function(collect){
     inter.oricord<-voronoi_interpo(collect[[l]][[2]], 15)
     incollect[[l]][[2]]<-rbind(incollect[[l]][[2]], inter.oricord)
     incollect[[l]][[1]]<-nrow(incollect[[l]][[2]])
-    myfs::debugText(l, incollect[[l]][[1]])
+    cat("dataset", l, "has", incollect[[l]][[1]], "points\n")
   }
 
   return(incollect)
@@ -19,6 +19,7 @@ all_interpolate<-function(collect){
 #'Interpolating points to one data set
 #'@param figure data set
 #'@param nvics the number of neighborhood points
+#'@return origin points and intepolated points
 #'
 voronoi_interpo<-function(figure, nvics){
 
@@ -72,12 +73,13 @@ get_vicinity<-function(dist, center, nvic){
 #'@param figure data set to be interpolated
 #'@importFrom deldir deldir
 #'@importFrom deldir tile.list
+#'@importFrom stats prcomp
 #'@return added points
 #'
 voronoi_border<-function(vics, figure){
 
 
-  vics_pca<-prcomp(figure[vics,])
+  vics_pca<-stats::prcomp(figure[vics,])
 
   res<-deldir::deldir(vics_pca$x[,1], vics_pca$x[,2])
 
@@ -125,9 +127,9 @@ exist_convexhull_check<-function(rpca, insecs){
 }
 
 
-#'
-#'@param sides
-#'@return
+#'Delete the same side in side set
+#'@param sides a side set
+#'@return a side set without overlapb
 #'
 #'
 sides_set<-function(sides){
@@ -166,11 +168,11 @@ sides_set<-function(sides){
 }
 
 
-#'
-#'@param rpca
-#'@param hline
-#'@param sides
-#'@return
+#'Distinguishing whether interpolated points are in a convex made of projected neighbor points via PCA from origin data.
+#'@param rpca projected neighbor points via PCA
+#'@param hline horizontal lines from interpolated points
+#'@param sides a side set of a convex
+#'@return True values indicate whether horizontal lines from interpolated points cross sides of convex in the side set
 #'
 #'
 convex_hull_check<-function(rpca, hline, sides){
@@ -207,11 +209,11 @@ convex_hull_check<-function(rpca, hline, sides){
 
 }
 
-#'
-#'@param rpca
-#'@param incord
-#'@param ori_cen
-#'
+#'Projecting intepolated points to coordinate system of original data
+#'@param rpca points whose dimension are reduced via PCA
+#'@param incord interpolated points
+#'@param ori_cen a center point of neighbors
+#'@return coordinates of intepolated points in coordinate system of original data
 #'
 origin_coordinate<-function(rpca, incord, ori_cen){
 
