@@ -89,7 +89,9 @@ voronoi_border<-function(vics, figure){
 
   exist<-exist_convexhull_check(vics_pca, insecs)
 
-  vics_oricord<-origin_coordinate(vics_pca, insecs[which(exist==T), ], figure[vics[1],])
+  if(length(insecs[which(exist==T), ]) > 0){
+    vics_oricord<-origin_coordinate(vics_pca, insecs[which(exist==T), ], figure[vics[1],])
+  }
 
   return(list(oricord=vics_oricord, pca_inter=insecs[which(exist==T), ]))
 
