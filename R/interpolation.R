@@ -1,12 +1,14 @@
 #'Interpolating points to data of list
 #'@param collect data to be interpolated
+#' @param nvic the number of neighbor points
 #'@importFrom myfs debugText
+#' @return list of interpolated data sets
 #'@export
 #'
-all_interpolate<-function(collect){
+all_interpolate<-function(collect, nvic){
   incollect<-collect
   for (l in 1:length(collect)) {
-    inter.oricord<-voronoi_interpo(collect[[l]][[2]], 15)
+    inter.oricord<-voronoi_interpo(collect[[l]][[2]], nvic)
     incollect[[l]][[2]]<-rbind(incollect[[l]][[2]], inter.oricord)
     incollect[[l]][[1]]<-nrow(incollect[[l]][[2]])
     cat("dataset", l, "has", incollect[[l]][[1]], "points\n")

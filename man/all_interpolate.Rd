@@ -4,10 +4,15 @@
 \alias{all_interpolate}
 \title{Interpolating points to data of list}
 \usage{
-all_interpolate(collect)
+all_interpolate(collect, nvic)
 }
 \arguments{
 \item{collect}{data to be interpolated}
+
+\item{nvic}{the number of neighbor points}
+}
+\value{
+list of interpolated data sets
 }
 \description{
 Interpolating points to data of list
