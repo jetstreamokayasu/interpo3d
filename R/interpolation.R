@@ -21,7 +21,8 @@ all_interpolate<-function(collect, nvic){
 #'Interpolating points to one data set
 #'@param figure data set
 #'@param nvics the number of neighborhood points
-#'@return origin points and intepolated points
+#'@return intepolated points
+#'@export
 #'
 voronoi_interpo<-function(figure, nvics){
 
